@@ -22,8 +22,17 @@ public class Company {
     }
 
     public void printStatus() {
+        System.out.println("=============================");
         System.out.println("Company: " + name);
-        System.out.println("Employees: " + employees.size());
-        System.out.println("Projects: " + projects.size());
+        System.out.println("=============================");
+        System.out.println("Employees (" + employees.size() + "):");
+        for (Employee e : employees) {
+            e.printInfo();
+        }
+        System.out.println("-----------------------------");
+        System.out.println("Projects (" + projects.size() + "):");
+        for (Project p : projects) {
+            p.printStatus();
+        }
     }
 }
