@@ -1,4 +1,4 @@
-package com.example.techcorp;
+package com.example.techcorp.domain;
 
 public class Employee implements Workable {
     private String name;
@@ -29,6 +29,7 @@ public class Employee implements Workable {
         return skill;
     }
 
+    public int getProductivity() { return skill; }
     public void printInfo() {
         System.out.println("Employee: " + name + ", Skill: " + skill + ", Salary: " + salary);
     }

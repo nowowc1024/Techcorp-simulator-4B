@@ -1,4 +1,5 @@
-package com.example.techcorp;
+package com.example.techcorp.domain;
+import com.example.techcorp.domain.Employee;
 
 public class Manager extends Employee {
 

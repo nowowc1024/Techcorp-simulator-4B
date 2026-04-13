@@ -1,4 +1,6 @@
 package com.example.techcorp;
+import com.example.techcorp.domain.Employee;
+import com.example.techcorp.domain.Employee;
 
 public class Intern extends Employee {
     public Intern(String name, int skill, double salary) {

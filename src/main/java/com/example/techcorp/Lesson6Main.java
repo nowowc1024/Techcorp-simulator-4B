@@ -1,4 +1,5 @@
 package com.example.techcorp;
+import com.example.techcorp.domain.Employee;
 public class Lesson6Main {
 public static void main(String[] args) {
 System.out.println("=== Exercise 4: Catching Exceptions ===");

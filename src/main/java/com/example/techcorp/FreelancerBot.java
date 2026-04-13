@@ -1,4 +1,5 @@
 package com.example.techcorp;
+import com.example.techcorp.domain.Workable;
 
 public class FreelancerBot implements Workable {
 
