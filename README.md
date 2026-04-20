@@ -1,5 +1,5 @@
 # Java Learning - Simulator and Lessons 
 Homework
 
-New Fiel name as of 30.03.2026 to include Lessons 4-9
+New File name as of 30.03.2026 to include Lessons 4-9
 
