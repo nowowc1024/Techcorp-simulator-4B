@@ -1,5 +1,9 @@
 package com.example.techcorp.domain;
 
+/**
+ * Abstract base class for all employee types.
+ * Enforces validation on construction and implements the Workable interface.
+ */
 public class Employee implements Workable {
 
     private static final double MINIMUM_SALARY = 1_000.0;
@@ -14,9 +18,11 @@ public class Employee implements Workable {
         setSalary(salary);
     }
 
+    // ── Setters with validation ──────────────────────────────────────────────
+
     public void setName(String name) {
         if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Name cannot be null or blank.");
+            throw new IllegalArgumentException("Employee name cannot be null or blank.");
         this.name = name;
     }
 
@@ -30,29 +36,37 @@ public class Employee implements Workable {
         if (salary < 0)
             throw new IllegalArgumentException("Salary cannot be negative.");
         if (salary < MINIMUM_SALARY)
-            throw new IllegalArgumentException("Salary cannot be below minimum: " + MINIMUM_SALARY);
+            throw new IllegalArgumentException(
+                "Salary cannot be below minimum: " + MINIMUM_SALARY);
         this.salary = salary;
     }
+
+    // ── Getters ──────────────────────────────────────────────────────────────
 
     public String getName()   { return name; }
     public int    getSkill()  { return skill; }
     public double getSalary() { return salary; }
 
+    /**
+     * Returns a label describing this employee's role.
+     * Subclasses override to return their specific role name.
+     */
+    public String getRole() { return "Employee"; }
+
+    // ── Workable ─────────────────────────────────────────────────────────────
+
+    /**
+     * Base work output equals the employee's skill level.
+     * Subclasses override to apply role-specific multipliers.
+     */
     @Override
     public int work() { return skill; }
 
-    public String getRole() { return "Employee"; }
-
-    public int getProductivity() { return skill; }
-
-    public void printInfo() {
-        System.out.println("Employee: " + name
-            + ", Skill: " + skill + ", Salary: " + salary);
-    }
+    // ── Utility ──────────────────────────────────────────────────────────────
 
     @Override
     public String toString() {
-        return "Employee{name='" + name + "', skill=" + skill
-            + ", salary=" + salary + "}";
+        return String.format("%-10s | Role: %-10s | Skill: %2d | Salary: %,.0f",
+            name, getRole(), skill, salary);
     }
 }

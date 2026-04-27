@@ -1,6 +1,8 @@
 package com.example.techcorp.domain;
 
-// Any class that can contribute work to a project must satisfy this contract.
+/**
+ * Any entity that can contribute work units to a project must implement this contract.
+ */
 public interface Workable {
-int work();
+    int work();
 }
