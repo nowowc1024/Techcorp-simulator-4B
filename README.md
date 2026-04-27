@@ -1,7 +1,7 @@
 # TechCorp Simulator
 
-A turn-based business decision-making game built in Java as a final project
-for an introductory object-oriented programming course.
+A business decision-making game built in Java as a final project
+for an introductory programming course at SGH WAW. 
 
 ---
 
