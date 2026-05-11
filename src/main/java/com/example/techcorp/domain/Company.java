@@ -1,5 +1,6 @@
 package com.example.techcorp.domain;
 
+import com.example.techcorp.util.InputValidator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,57 +17,34 @@ public class Company {
     private final List<Project>  projects;
 
     public Company(String name, double initialCash) {
-        if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Company name cannot be blank.");
-        if (initialCash < 0)
-            throw new IllegalArgumentException("Initial cash cannot be negative.");
+        InputValidator.requireNonBlank(name, "Company name");
+        InputValidator.requireNonNegative(initialCash, "Initial cash");
         this.name      = name;
         this.budget    = new Budget(initialCash);
         this.employees = new ArrayList<>();
         this.projects  = new ArrayList<>();
     }
 
-    // ── Employees ────────────────────────────────────────────────────────────
-
     public void hire(Employee employee) {
-        if (employee == null)
-            throw new IllegalArgumentException("Cannot hire a null employee.");
+        InputValidator.requireNotNull(employee, "Employee");
         if (employees.contains(employee))
             throw new IllegalStateException(
                 employee.getName() + " is already employed here.");
         employees.add(employee);
     }
 
-    // ── Projects ─────────────────────────────────────────────────────────────
-
-    /**
-     * Registers a project as PLANNED. Player starts it via the menu.
-     */
     public void addProject(Project project) {
-        if (project == null)
-            throw new IllegalArgumentException("Cannot add a null project.");
+        InputValidator.requireNotNull(project, "Project");
         if (projects.contains(project))
             throw new IllegalStateException("Project already registered.");
         projects.add(project);
     }
 
-    /**
-     * Registers AND immediately starts a project.
-     */
     public void startProject(Project project) {
         addProject(project);
         project.start();
     }
 
-    // ── Finances ─────────────────────────────────────────────────────────────
-
-    /**
-     * Deducts total salaries from the budget.
-     * Called by GameEngine at the end of each turn.
-     *
-     * @return total amount paid
-     * @throws IllegalStateException if funds are insufficient
-     */
     public double paySalaries() {
         double total = employees.stream()
                                 .mapToDouble(Employee::getSalary)
@@ -76,13 +54,12 @@ public class Company {
     }
 
     public void receiveFunds(double amount) {
+        InputValidator.requirePositive(amount, "Amount");
         budget.credit(amount);
     }
 
-    // ── Getters ──────────────────────────────────────────────────────────────
-
-    public String getName()  { return name; }
-    public double getCash()  { return budget.getBalance(); }
+    public String getName()   { return name; }
+    public double getCash()   { return budget.getBalance(); }
     public Budget getBudget() { return budget; }
 
     public List<Employee> getEmployees() {

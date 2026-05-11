@@ -1,5 +1,6 @@
 package com.example.techcorp.domain;
 
+import com.example.techcorp.util.InputValidator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,10 +19,8 @@ public class Project {
     private final List<Employee> employees;
 
     public Project(String name, int requiredWork) {
-        if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Project name cannot be blank.");
-        if (requiredWork <= 0)
-            throw new IllegalArgumentException("Required work must be positive.");
+        InputValidator.requireNonBlank(name, "Project name");
+        InputValidator.requirePositive(requiredWork, "Required work");
         this.name         = name;
         this.requiredWork = requiredWork;
         this.progress     = 0;
@@ -29,11 +28,8 @@ public class Project {
         this.employees    = new ArrayList<>();
     }
 
-    // ── Employee assignment ──────────────────────────────────────────────────
-
     public void addEmployee(Employee employee) {
-        if (employee == null)
-            throw new IllegalArgumentException("Employee cannot be null.");
+        InputValidator.requireNotNull(employee, "Employee");
         if (status == ProjectStatus.FINISHED || status == ProjectStatus.CANCELLED)
             throw new IllegalStateException(
                 "Cannot assign employees to a " + status + " project.");
@@ -44,12 +40,11 @@ public class Project {
     }
 
     public void removeEmployee(Employee employee) {
+        InputValidator.requireNotNull(employee, "Employee");
         if (!employees.remove(employee))
             throw new IllegalStateException(
                 employee.getName() + " is not assigned to this project.");
     }
-
-    // ── Status transitions ───────────────────────────────────────────────────
 
     public void start() {
         if (status != ProjectStatus.PLANNED)
@@ -78,13 +73,6 @@ public class Project {
         status = ProjectStatus.CANCELLED;
     }
 
-    // ── Work ─────────────────────────────────────────────────────────────────
-
-    /**
-     * Advances work by one turn.
-     * Each assigned employee contributes via work() — polymorphic dispatch
-     * through the Workable interface.
-     */
     public void workOneTurn() {
         if (status != ProjectStatus.IN_PROGRESS) return;
         for (Employee e : employees) {
@@ -95,8 +83,6 @@ public class Project {
             status   = ProjectStatus.FINISHED;
         }
     }
-
-    // ── Getters ──────────────────────────────────────────────────────────────
 
     public String        getName()         { return name; }
     public ProjectStatus getStatus()       { return status; }

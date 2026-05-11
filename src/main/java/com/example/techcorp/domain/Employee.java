@@ -1,5 +1,7 @@
 package com.example.techcorp.domain;
 
+import com.example.techcorp.util.InputValidator;
+
 /**
  * Abstract base class for all employee types.
  * Enforces validation on construction and implements the Workable interface.
@@ -18,51 +20,30 @@ public class Employee implements Workable {
         setSalary(salary);
     }
 
-    // ── Setters with validation ──────────────────────────────────────────────
-
     public void setName(String name) {
-        if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Employee name cannot be null or blank.");
+        InputValidator.requireNonBlank(name, "Employee name");
         this.name = name;
     }
 
     public void setSkill(int skill) {
-        if (skill <= 0)
-            throw new IllegalArgumentException("Skill must be greater than zero.");
+        InputValidator.requirePositive(skill, "Skill");
         this.skill = skill;
     }
 
     public void setSalary(double salary) {
-        if (salary < 0)
-            throw new IllegalArgumentException("Salary cannot be negative.");
-        if (salary < MINIMUM_SALARY)
-            throw new IllegalArgumentException(
-                "Salary cannot be below minimum: " + MINIMUM_SALARY);
+        InputValidator.requireNonNegative(salary, "Salary");
+        InputValidator.requireMinimumSalary(salary, MINIMUM_SALARY);
         this.salary = salary;
     }
-
-    // ── Getters ──────────────────────────────────────────────────────────────
 
     public String getName()   { return name; }
     public int    getSkill()  { return skill; }
     public double getSalary() { return salary; }
 
-    /**
-     * Returns a label describing this employee's role.
-     * Subclasses override to return their specific role name.
-     */
     public String getRole() { return "Employee"; }
 
-    // ── Workable ─────────────────────────────────────────────────────────────
-
-    /**
-     * Base work output equals the employee's skill level.
-     * Subclasses override to apply role-specific multipliers.
-     */
     @Override
     public int work() { return skill; }
-
-    // ── Utility ──────────────────────────────────────────────────────────────
 
     @Override
     public String toString() {
