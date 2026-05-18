@@ -9,6 +9,7 @@ import com.example.techcorp.ui.ConsoleUI;
  * Responsibilities:
  *   - Present each turn's menu and dispatch player choices
  *   - Advance the simulation (work + salary payment) at end of turn
+ *   - Pay out project rewards on completion
  *   - Track win / lose conditions
  *   - Maintain the Score
  *
@@ -163,13 +164,16 @@ public class GameEngine {
     }
 
     private void endTurn() {
-        // 1. All IN_PROGRESS projects do work
+        // 1. All IN_PROGRESS projects do work.
+        //    When a project finishes, pay its cash reward to the company.
         for (Project p : company.getProjects()) {
             boolean wasDone = p.isFinished();
             p.workOneTurn();
             if (!wasDone && p.isFinished()) {
                 score.projectCompleted();
-                ui.showMessage("🏆 '" + p.getName() + "' COMPLETED! (+200 pts)");
+                company.receiveFunds(p.getReward());
+                ui.showMessage("🏆 '" + p.getName() + "' COMPLETED! (+200 pts, +"
+                    + p.getReward() + " PLN)");
             }
         }
 
@@ -188,6 +192,12 @@ public class GameEngine {
         }
 
         ui.showTurnSummary(paid, score);
+
+        // 3b. Warn the player if next turn's payroll cannot be covered.
+        if (company.getCash() < company.getTotalSalaries()) {
+            ui.showMessage("⚠ Cash won't cover next turn's payroll ("
+                + company.getTotalSalaries() + " PLN). Finish a project soon.");
+        }
 
         // 4. Check win condition
         if (allProjectsResolved()) {

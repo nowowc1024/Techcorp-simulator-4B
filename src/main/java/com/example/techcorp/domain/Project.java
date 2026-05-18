@@ -9,23 +9,43 @@ import java.util.List;
  * Represents a software project that employees are assigned to.
  * Tracks progress through a status lifecycle:
  * PLANNED → IN_PROGRESS → FINISHED/CANCELLED, with ON_HOLD pause/resume.
+ *
+ * A project also carries a cash {@code reward}, paid to the company
+ * when the project reaches FINISHED status.
  */
 public class Project {
 
+    /** Default reward used when none is specified: scales with required work. */
+    private static final int DEFAULT_REWARD_PER_WORK = 2500;
+
     private final String         name;
     private final int            requiredWork;
+    private final int            reward;
     private int                  progress;
     private ProjectStatus        status;
     private final List<Employee> employees;
 
-    public Project(String name, int requiredWork) {
+    /**
+     * Full constructor: lets the caller set an explicit cash reward.
+     */
+    public Project(String name, int requiredWork, int reward) {
         InputValidator.requireNonBlank(name, "Project name");
         InputValidator.requirePositive(requiredWork, "Required work");
+        InputValidator.requirePositive(reward, "Reward");
         this.name         = name;
         this.requiredWork = requiredWork;
+        this.reward       = reward;
         this.progress     = 0;
         this.status       = ProjectStatus.PLANNED;
         this.employees    = new ArrayList<>();
+    }
+
+    /**
+     * Convenience constructor: keeps older two-argument calls working.
+     * The reward defaults to requiredWork * DEFAULT_REWARD_PER_WORK.
+     */
+    public Project(String name, int requiredWork) {
+        this(name, requiredWork, requiredWork * DEFAULT_REWARD_PER_WORK);
     }
 
     public void addEmployee(Employee employee) {
@@ -88,6 +108,7 @@ public class Project {
     public ProjectStatus getStatus()       { return status; }
     public int           getProgress()     { return progress; }
     public int           getRequiredWork() { return requiredWork; }
+    public int           getReward()       { return reward; }
     public boolean       isFinished()      { return status == ProjectStatus.FINISHED; }
     public boolean       isCancelled()     { return status == ProjectStatus.CANCELLED; }
     public boolean       isActive()        { return status == ProjectStatus.IN_PROGRESS; }
